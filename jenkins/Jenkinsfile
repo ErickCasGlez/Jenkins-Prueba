@@ -1,6 +1,9 @@
 pipeline {
     agent any
     stages {
+        stage ("Build"){
+        }
+    stages {
         stage ("Clean Up"){
             steps {
                 deleteDir()
