@@ -1,18 +1,58 @@
-pipeline{
+pipeline {
     agent any
-
-    parameters{
-        string(defaultValue: "Nombre", description: "Which environment to deploy in?", name: "deployEnv")
-        choice(choices:["EU-WEST-2A", "EU-WEST-2B", "EU-WEST-2C"], description: "Which environment to deploy in?", name: "deployZone")
-        booleanParam(defaultValue: false, description: "Confirm?", name: "confirm")
-    }
-
-    stages{
-        stage ("Completa la info") {
+    stages {
+        stage('Build') {
             steps {
-                echo "Nombre: ${deployEnv} \n"
-                echo "Zona: ${deployZone}\n"
-                echo "Confirma? ${confirm}"
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml' 
+                }
+            }
+        }
+        stage('Deliver') { 
+            steps {
+                sh './jenkins/scripts/deliver.sh' 
+            }
+        }
+    }
+}pipeline {
+    agent any
+    stages {
+        stage ("Clean Up"){
+            steps {
+                deleteDir()
+            }
+        }
+        stage ("Stage 1") {
+            steps {
+                echo "This Is Stage 1"
+            }
+        }
+        stage ("Stage 2") {
+            steps {
+                echo "This Is Stage 2"
+            }
+        }
+        stage ("Stage 3") {
+            steps {
+                echo "This Is Stage 3"
+            }
+        }
+        stage ("Stage 4") {
+            steps {
+                echo "This Is Stage 4"
+            }
+        }
+        stage ("Stage 5") {
+            steps {
+                echo "This Is Stage 5"
             }
         }
     }
